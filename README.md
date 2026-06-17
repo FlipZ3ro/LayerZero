@@ -83,12 +83,6 @@ npx hardhat lz:oft:send \
 | Ethereum Mainnet | `30101` |
 | Arbitrum Mainnet | `30110` |
 
-### Bridge existing token (hardcoded)
-
-```bash
-npx hardhat bridge --network bsc-mainnet
-```
-
 ## Project Structure
 
 ```
