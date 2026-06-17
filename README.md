@@ -1,6 +1,6 @@
 # OFT — Omnichain Fungible Token (LayerZero V2)
 
-Cross-chain token transfer menggunakan LayerZero V2. Konfigurasi saat ini: **Base ↔ BSC mainnet**.
+Cross-chain token transfer using LayerZero V2. Current configuration: **Base ↔ BSC mainnet**.
 
 ## Stack
 
@@ -23,14 +23,14 @@ npm install
 cp .env.sample .env
 ```
 
-Isi `.env`:
+Fill in `.env`:
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `PRIVATE_KEY` | ✅ | Private key wallet deployer |
-| `MNEMONIC` | ❌ | Alternative ke PRIVATE_KEY |
-| `RPC_URL_BSC` | ❌ | RPC BSC (default: public Binance RPC) |
-| `RPC_URL_BASE` | ❌ | RPC Base (default: public Base RPC) |
+| `PRIVATE_KEY` | ✅ | Deployer wallet private key |
+| `MNEMONIC` | ❌ | Alternative to PRIVATE_KEY |
+| `RPC_URL_BSC` | ❌ | BSC RPC (default: public Binance RPC) |
+| `RPC_URL_BASE` | ❌ | Base RPC (default: public Base RPC) |
 
 ### 3. Compile
 
@@ -42,8 +42,8 @@ npx hardhat compile
 
 | Contract | Chain | Description |
 |----------|-------|-------------|
-| `MyOFT` | BSC | Token OFT native, bisa mint sendiri |
-| `MyOFTAdapter` | Base | Adapter untuk wrap ERC-20 yang sudah ada (`0x182FA643E5f29d5EcA75e7b9CF9336A3fe4620b2`) |
+| `MyOFT` | BSC | Native OFT token with mint capability |
+| `MyOFTAdapter` | Base | Adapter to wrap existing ERC-20 (`0x182FA643E5f29d5EcA75e7b9CF9336A3fe4620b2`) |
 
 ## Deploy
 
@@ -55,7 +55,7 @@ npx hardhat deploy --tags MyOFT --network bsc-mainnet
 
 ### Deploy MyOFTAdapter (Base)
 
-Pastikan `oftAdapter.tokenAddress` di `hardhat.config.ts` sudah benar.
+Make sure `oftAdapter.tokenAddress` in `hardhat.config.ts` is correct.
 
 ```bash
 npx hardhat deploy --tags MyOFTAdapter --network base
@@ -69,14 +69,14 @@ npx hardhat lz:oapp:wire --oapp-config layerzero.config.ts
 
 ## Bridge / Send Token
 
-### Kirim token cross-chain
+### Send tokens cross-chain
 
 ```bash
 npx hardhat lz:oft:send \
   --src-eid 30184 \
   --dst-eid 30102 \
   --amount 5.68495 \
-  --to <ADDRESS_TUJUAN> \
+  --to <DESTINATION_ADDRESS> \
   --oapp-config layerzero.config.ts \
   --oft-address <OFT_CONTRACT_ADDRESS> \
   --network bsc-mainnet
@@ -106,7 +106,7 @@ npx hardhat test
 # Foundry tests
 forge test
 
-# Semua
+# All
 npm test
 ```
 
@@ -114,20 +114,23 @@ npm test
 
 ```
 contracts/
-├── MyOFT.sol              # OFT native
-├── MyOFTAdapter.sol       # OFT adapter untuk existing ERC-20
-└── mocks/                 # Mock contracts untuk testing
+├── MyOFT.sol              # Native OFT
+├── MyOFTAdapter.sol       # OFT adapter for existing ERC-20
 
 deploy/
 ├── MyOFT.ts
 └── MyOFTAdapter.ts
 
 tasks/
+├── index.ts               # Task entry point
 ├── sendOFT.ts             # lz:oft:send
-├── bridgeExisting.ts      # bridge
-└── simple-workers-mock/   # Tasks untuk testnet (mock DVN/Executor)
+├── sendEvm.ts             # EVM send logic
+├── bridgeExisting.ts      # bridge (hardcoded addresses)
+├── types.ts
+└── utils.ts
 
 layerzero.config.ts         # Wiring config Base <-> BSC
+hardhat.config.ts           # Network & compiler config
 ```
 
 ## Contract Addresses (Mainnet)
