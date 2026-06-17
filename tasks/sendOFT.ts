@@ -2,13 +2,12 @@
 import { task, types } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 
-import { types as cliTypes, createGetHreByEid } from '@layerzerolabs/devtools-evm-hardhat'
+import { types as cliTypes } from '@layerzerolabs/devtools-evm-hardhat'
 import { ChainType, endpointIdToChainType, endpointIdToNetwork } from '@layerzerolabs/lz-definitions'
 
 import { EvmArgs, sendEvm } from './sendEvm'
-import { noncePreflightCheck, triggerProcessReceive } from './simple-workers-mock/utils/common'
 import { SendResult } from './types'
-import { DebugLogger, KnownOutputs, KnownWarnings, getBlockExplorerLink, getOftAddresses } from './utils'
+import { DebugLogger, KnownOutputs, KnownWarnings, getBlockExplorerLink } from './utils'
 
 // getOAppInfoByEid moved to ./utils
 
@@ -30,8 +29,6 @@ interface MasterArgs {
     composeMsg?: string
     /** EVM: 20-byte hex address */
     oftAddress?: string
-    /** DEVELOPMENT ONLY: Enable SimpleDVN manual verification flow (not for mainnet use) */
-    simpleWorkers?: boolean
 }
 
 task('lz:oft:send', 'Sends OFT tokens cross‐chain from EVM chains')
@@ -71,21 +68,9 @@ task('lz:oft:send', 'Sends OFT tokens cross‐chain from EVM chains')
         undefined,
         types.string
     )
-    .addFlag(
-        'simpleWorkers',
-        'DEVELOPMENT ONLY: Enable SimpleWorkers manual verification and execution flow after sending (not for mainnet use)'
-    )
     .setAction(async (args: MasterArgs, hre: HardhatRuntimeEnvironment) => {
         const chainType = endpointIdToChainType(args.srcEid)
         let result: SendResult
-        // SimpleWorkers-only context
-        // These variables are only used when args.simpleWorkers is true.
-        // They are populated once and reused across preflight (before send) and manual processing (after send).
-        const getHreByEid = createGetHreByEid(hre)
-        let dstHre: HardhatRuntimeEnvironment | null = null
-        let srcHre: HardhatRuntimeEnvironment | null = null
-        let srcOftAddress: string | null = null
-        let dstOftAddress: string | null = null
 
         if (args.oftAddress) {
             DebugLogger.printWarning(
@@ -96,24 +81,6 @@ task('lz:oft:send', 'Sends OFT tokens cross‐chain from EVM chains')
 
         // Only support EVM chains in this example
         if (chainType === ChainType.EVM) {
-            // SimpleWorkers nonce preflight check before sending. This prevents initiating sends that will lead to InvalidNonce errors.
-            if (args.simpleWorkers) {
-                ;[dstHre, srcHre] = await Promise.all([getHreByEid(args.dstEid), getHreByEid(args.srcEid)])
-                if (!dstHre || !srcHre) {
-                    throw new Error('Failed to resolve Hardhat runtimes for src/dst EIDs')
-                }
-                const addrs = await getOftAddresses(
-                    args.srcEid,
-                    args.dstEid,
-                    args.oappConfig,
-                    (eid: number) => Promise.resolve(createGetHreByEid(hre)(eid)),
-                    args.oftAddress
-                )
-                srcOftAddress = addrs.srcOft
-                dstOftAddress = addrs.dstOft
-                await noncePreflightCheck(dstHre, srcOftAddress, dstOftAddress, args.srcEid)
-            }
-
             result = await sendEvm(args as EvmArgs, hre)
         } else {
             throw new Error(
@@ -141,22 +108,4 @@ task('lz:oft:send', 'Sends OFT tokens cross‐chain from EVM chains')
             KnownOutputs.EXPLORER_LINK,
             `LayerZero Scan link for tracking all cross-chain transaction details: ${result.scanLink}`
         )
-
-        // SimpleDVN processing (development only) - runs at the very end
-        if (args.simpleWorkers) {
-            if (!dstHre || !srcHre || !dstOftAddress || !srcOftAddress) {
-                throw new Error('SimpleWorkers: Missing resolved hre or oft info')
-            }
-            await triggerProcessReceive(dstHre, srcHre, {
-                srcEid: args.srcEid,
-                dstEid: args.dstEid,
-                to: args.to,
-                amount: args.amount,
-                outboundNonce: result.outboundNonce,
-                srcOftAddress,
-                dstOftAddress,
-                dstContractName: undefined,
-                extraOptions: result.extraOptions,
-            })
-        }
     })
