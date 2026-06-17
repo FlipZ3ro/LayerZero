@@ -71,6 +71,8 @@ npx hardhat lz:oapp:wire --oapp-config layerzero.config.ts
 
 ### Send tokens cross-chain
 
+**BSC → Base:**
+
 ```bash
 npx hardhat lz:oft:send \
   --src-eid 30184 \
@@ -78,8 +80,21 @@ npx hardhat lz:oft:send \
   --amount 5.68495 \
   --to <DESTINATION_ADDRESS> \
   --oapp-config layerzero.config.ts \
-  --oft-address <OFT_CONTRACT_ADDRESS> \
+  --oft-address 0x500A02a20B0B0A3F3efCCFc0559543F5743bd1C4 \
   --network bsc-mainnet
+```
+
+**Base → BSC:**
+
+```bash
+npx hardhat lz:oft:send \
+  --src-eid 30102 \
+  --dst-eid 30184 \
+  --amount 5.68495 \
+  --to <DESTINATION_ADDRESS> \
+  --oapp-config layerzero.config.ts \
+  --oft-address 0x500A02a20B0B0A3F3efCCFc0559543F5743bd1C4 \
+  --network base
 ```
 
 **Endpoint IDs:**
