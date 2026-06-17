@@ -77,7 +77,7 @@ npx hardhat lz:oapp:wire --oapp-config layerzero.config.ts
 npx hardhat lz:oft:send \
   --src-eid 30184 \
   --dst-eid 30102 \
-  --amount 5.68495 \
+  --amount <AMOUNT> \
   --to <DESTINATION_ADDRESS> \
   --oapp-config layerzero.config.ts \
   --oft-address 0x500A02a20B0B0A3F3efCCFc0559543F5743bd1C4 \
@@ -90,7 +90,7 @@ npx hardhat lz:oft:send \
 npx hardhat lz:oft:send \
   --src-eid 30102 \
   --dst-eid 30184 \
-  --amount 5.68495 \
+  --amount <AMOUNT> \
   --to <DESTINATION_ADDRESS> \
   --oapp-config layerzero.config.ts \
   --oft-address 0x500A02a20B0B0A3F3efCCFc0559543F5743bd1C4 \
