@@ -29,7 +29,7 @@ Fill in `.env`:
 |----------|----------|-------------|
 | `PRIVATE_KEY` | ✅ | Deployer wallet private key |
 | `MNEMONIC` | ❌ | Alternative to PRIVATE_KEY |
-| `RPC_URL_BSC` | ❌ | BSC RPC (default: public Binance RPC) |
+| `RPC_URL_BSC` | ❌ | BSC RPC (default: `https://bsc-rpc.publicnode.com`) |
 | `RPC_URL_BASE` | ❌ | Base RPC (default: public Base RPC) |
 
 ### 3. Compile

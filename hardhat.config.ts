@@ -54,7 +54,7 @@ const config: HardhatUserConfig = {
         },
         'bsc-mainnet': {
             eid: EndpointId.BSC_V2_MAINNET,
-            url: process.env.RPC_URL_BSC || 'https://bsc-dataseed.binance.org',
+            url: process.env.RPC_URL_BSC || 'https://bsc-rpc.publicnode.com',
             accounts,
         },
         hardhat: {
