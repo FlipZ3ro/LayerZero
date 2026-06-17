@@ -28,7 +28,6 @@ Fill in `.env`:
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `PRIVATE_KEY` | ✅ | Deployer wallet private key |
-| `MNEMONIC` | ❌ | Alternative to PRIVATE_KEY |
 | `RPC_URL_BSC` | ❌ | BSC RPC (default: `https://bsc-rpc.publicnode.com`) |
 | `RPC_URL_BASE` | ❌ | Base RPC (default: public Base RPC) |
 
@@ -44,28 +43,6 @@ npx hardhat compile
 |----------|-------|-------------|
 | `MyOFT` | BSC | Native OFT token with mint capability |
 | `MyOFTAdapter` | Base | Adapter to wrap existing ERC-20 (`0x182FA643E5f29d5EcA75e7b9CF9336A3fe4620b2`) |
-
-## Deploy
-
-### Deploy MyOFT (BSC)
-
-```bash
-npx hardhat deploy --tags MyOFT --network bsc-mainnet
-```
-
-### Deploy MyOFTAdapter (Base)
-
-Make sure `oftAdapter.tokenAddress` in `hardhat.config.ts` is correct.
-
-```bash
-npx hardhat deploy --tags MyOFTAdapter --network base
-```
-
-### Wire (set pathway)
-
-```bash
-npx hardhat lz:oapp:wire --oapp-config layerzero.config.ts
-```
 
 ## Bridge / Send Token
 
@@ -112,29 +89,12 @@ npx hardhat lz:oft:send \
 npx hardhat bridge --network bsc-mainnet
 ```
 
-## Testing
-
-```bash
-# Hardhat tests
-npx hardhat test
-
-# Foundry tests
-forge test
-
-# All
-npm test
-```
-
 ## Project Structure
 
 ```
 contracts/
 ├── MyOFT.sol              # Native OFT
 ├── MyOFTAdapter.sol       # OFT adapter for existing ERC-20
-
-deploy/
-├── MyOFT.ts
-└── MyOFTAdapter.ts
 
 tasks/
 ├── index.ts               # Task entry point
