@@ -20,7 +20,7 @@ npm install
 ### 2. Environment
 
 ```bash
-cp .env.sample .env
+cp .env.example .env
 ```
 
 Fill in `.env`:
