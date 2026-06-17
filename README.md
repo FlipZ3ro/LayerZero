@@ -37,13 +37,6 @@ Fill in `.env`:
 npx hardhat compile
 ```
 
-## Contracts
-
-| Contract | Chain | Description |
-|----------|-------|-------------|
-| `MyOFT` | BSC | Native OFT token with mint capability |
-| `MyOFTAdapter` | Base | Adapter to wrap existing ERC-20 (`0x182FA643E5f29d5EcA75e7b9CF9336A3fe4620b2`) |
-
 ## Bridge / Send Token
 
 ### Send tokens cross-chain
